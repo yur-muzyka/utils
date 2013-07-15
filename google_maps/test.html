@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <style>
+          #map {
+              width: 800px;
+              height: 600px;
+          }
+      </style>
+
+
+
+   <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+
+   <script>
+	var map;
+    var citymap = {};
+
+    citymap['delivery_0'] = {
+        center: new google.maps.LatLng(34, 23),
+        radius: 60000
+    }
+    citymap['delivery_1'] = {
+        center: new google.maps.LatLng(31, 18),
+        radius: 80000
+    }
+    citymap['delivery_2'] = {
+        center: new google.maps.LatLng(36, 20),
+        radius: 120000
+    }
+
+
+	
+	function initialize() {
+             var myLatlng = new google.maps.LatLng(-25.363882,131.044922);
+
+		var mapOptions = {
+			mapTypeId: google.maps.MapTypeId.ROADMAP,
+            center: myLatlng
+
+		}
+
+		map = new google.maps.Map(document.getElementById('map'), mapOptions);
+
+        var markersBounds = new google.maps.LatLngBounds();
+        
+        var index = 1;
+        var populationOptions = {};
+        var infowindow;
+        var fill = {};
+        fill[1] = '#00e142';
+        fill[2] = '#d6e300';
+        fill[3] = '#d103e8';
+
+        for (var city in citymap) {
+            // Construct the circle for each value in citymap. We scale population by 20.
+            populationOptions[index] = {
+                    strokeColor: '#FF0000',
+                    strokeOpacity: 0,
+                    strokeWeight: 1,
+                    fillColor: fill[index],
+                    fillOpacity: 0.35,
+                    map: map,
+                    center: citymap[city].center,
+                    radius: citymap[city].radius
+                };
+
+             var marker = new google.maps.Marker({
+                position: new google.maps.LatLng(citymap[city].center.jb, citymap[city].center.kb),
+                map: map
+            });
+    
+             google.maps.event.addListener(marker, 'click', function() {
+                     infowindow.close();                                
+                     infowindow.open(map,marker);
+                     map.setCenter(marker.getPosition()); 
+              });	
+            var contentstring = 'L`viv ' + index;
+            
+            infowindow = new google.maps.InfoWindow({
+                  content: contentstring
+              });
+
+            cityCircle = new google.maps.Circle(populationOptions[index]);
+            var markerPosition = new google.maps.LatLng(citymap[city].center.jb, citymap[city].center.kb);
+
+            markersBounds.extend(markerPosition);
+            
+            index ++;
+        }
+
+        map.setCenter(markersBounds.getCenter(), map.fitBounds(markersBounds));
+	}
+	
+	google.maps.event.addDomListener(window, 'load', initialize);
+
+==================================
+            function codeLatLng() {
+                var input = document.getElementById("latlng").value;
+                var latlngStr = input.split(",",2);
+                var lat = parseFloat(latlngStr[0]);
+                var lng = parseFloat(latlngStr[1]);
+                var latlng = new google.maps.LatLng(lat, lng);
+                geocoder.geocode({'latLng': latlng}, function(results, status) {
+                    if (status == google.maps.GeocoderStatus.OK) {
+                        if (results[1]) {
+                            map.setZoom(11);
+                            marker = new google.maps.Marker({
+                                position: latlng,
+                                map: map
+                            });
+                            infowindow.setContent(results[1].formatted_address);
+                            infowindow.open(map, marker);
+                        }
+                        } else {
+                        alert("Geocoder failed due to: " + status);
+                    }
+                });
+            }
+
+==================================
+</script>
+</head>
+<body>
+<div id="map"></div>
+</body>
+
+</html>
+
+
