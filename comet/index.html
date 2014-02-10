@@ -1,0 +1,65 @@
+<script src="http://code.jquery.com/jquery.js"></script>
+
+<script>
+
+    function Messanger() {
+        this.last = 0;
+        this.timeout = 360;
+        this.comet = 0;
+        var self = this;
+        this.putMessage = function(id,name,text) {
+            // callback, добавляет сообщения на страницу, вызывается из полученных с сервера данных
+            self.last = id;
+            var b = document.createElement('div');
+            b.innerHTML = '<span style="color: red;">'+name+'</span> '+text;
+            $('#messages').append(b);
+        }
+        this.parseData = function(message) {
+            // простая обработка данных полученных с сервера, разбиваем строки и выполняет функции
+            var items = message.split(';');
+            if (items.length<1) return false;
+            for (var i=0;i<items.length;i++) {
+                eval(items[i]);
+            }
+            setTimeout(self.connection,1000);
+        }
+        this.connection = function() {
+            // здесь открывается соединение с сервером
+            self.comet = $.ajax({
+                    type: "GET",
+                    url:  "server.php",
+                    data: {'id':self.last},
+                    dataType: "text",
+                    timeout: self.timeout*1000,
+                    success: self.parseData,
+                    error: function(){
+                        // something wrong. but setInterval will set up connection automatically
+                        setTimeout(self.connection,1000);
+                   }
+                });
+        }
+        this.init = function() {
+            //setInterval(self.connection,self.timeout*1000);
+            self.connection();
+        }
+        this.init();
+    }
+    function sendMessage() {
+        // callback формы, для отправки сообщений на сервер
+        if ($('#name').val()&&$('#text').val()) {
+            var data = {
+                    name: $('#name').val(),
+                    text: $('#text').val()
+                }
+            $.post('add_new.php',data);
+        } else {
+            alert('Please fill the fields');
+        }
+    }
+    $(document).ready(function(){
+        // инициализация
+        var msg = new Messanger();
+    });
+</script>
+
+<div id="messages"></div>
