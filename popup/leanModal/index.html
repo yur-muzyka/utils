@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<title>Popup Login and Register</title>
+<script type="text/javascript" src="js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="js/jquery.leanModal.min.js"></script>
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" />
+<link type="text/css" rel="stylesheet" href="css/lean_style.css" />
+
+<body>
+
+	<a id="modal_trigger" href="#modal">Click here to Login or register</a>
+
+	<div id="modal" class="popupContainer" style="display:none;">
+
+        <object data="1.pdf" type="application/pdf" width="804" height="2703">
+            <a href="1.pdf">test.pdf</a>
+        </object>
+
+	</div>
+
+<script type="text/javascript">
+	$("#modal_trigger").leanModal({top : 200, overlay : 0.6, closeButton: ".modal_close" });
+</script>
+
+</body>
+</html>
